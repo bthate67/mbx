@@ -3,14 +3,16 @@
 
 import os, sys ; sys.path.insert(0, "olib")
 
+from dbs import listfiles
+from dbs import find as ifind
 from fnd import fnd
 from hdl import Client, cmd
 from hdl import cmd as icmd
 from nms import Names
-from obj import Default, Object, cfg
-from tms import todate
+from obj import Default, Object, Cfg, fmt, cfg, opts
+from tms import elapsed, fntime, todate
 from trm import exec
-from zzz import mailbox, os, sys
+from zzz import mailbox, os, sys, time
 
 __version__ = 1
 
@@ -44,7 +46,28 @@ class Email(Default):
 def cmd(event):
     event.reply(",".join(sorted(Names.modules.keys())))
 
-def mbx(event):
+def find(event):
+    args = list(event.gets)
+    nr = -1
+    try:
+        args.extend(event.args)
+    except IndexError:
+        pass
+    got = False
+    for fn, o in ifind("__main__.Email", event.gets, event.index, event.timed):
+        nr += 1
+        txt = "%s %s" % (str(nr), fmt(o, args or o.keys(), skip=event.skip.keys()))
+        if opts("t") or "t" in event.opts:
+            if "Date" in o.keys():
+                fn = os.sep.join(todate(o.Date).split())
+            txt = txt + " %s" % (elapsed(time.time() - fntime(fn)))
+        got = True
+        event.reply(txt)
+    if not got:
+        event.reply("no result")
+
+
+def scan(event):
     if not event.args:
         return
     if os.path.exists(os.path.join(cfg.wd, "store", "__main__.Email")):
@@ -81,7 +104,7 @@ def mbx(event):
         event.reply("ok %s" % nr)
 
 def ver(event):
-    event.reply("OLIB %s" % __version__)
+    event.reply("MBX %s" % __version__)
 
 def main():
     cfg.name = "mbx"
@@ -90,8 +113,8 @@ def main():
     c = Console()
     c.boot()
     c.add("cmd", cmd)
-    c.add("mbx", mbx)
-    c.add("fnd", fnd)
+    c.add("find", find)
+    c.add("scan", scan)
     c.add("ver", ver)
     if cfg.txt:
         c.prompt = False
