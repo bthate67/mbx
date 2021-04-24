@@ -1,60 +1,52 @@
 README
 ######
 
-Welcome to OLIB, an object library.
+Welcome to MBX, a mailbox scanner.
 
-OLIB is an object library you can use to program with objects, uses a JSON
-in file database with a versioned readonly storage and reconstructs objects
-based on type information in the path. 
+MBX can be used to scan a unix mailbox and make it searchable.
 
-OLIB is placed in the Public Domain and has no COPYRIGHT and no LICENSE.
+MBX is placed in the Public Domain and has no COPYRIGHT and no LICENSE.
 
 INSTALL
 =======
 
-OLIB can be found on pypi, see http://pypi.org/project/olib
+MBX can be found on pypi, see http://pypi.org/project/mbx
 
 installation is through pypi::
 
- $ sudo pip3 install olib --upgrade --force-reinstall
+ $ sudo pip3 install mbx --upgrade --force-reinstall
 
-PROGRAMMING
-===========
+USAGE
+=====
 
-OLIB provides a library you can use to program objects under python3. It 
-provides a basic Object, that mimics a dict while using attribute access
-and provides a save/load to/from json files on disk. Objects can be
-searched with a little database module, provides read-only files to
-improve persistence and use a type in filename reconstruction.
+examples::
 
-basic usage is this:
+ $ mbx cmd
+ cmd,find,scan,ver
 
- >>> from obj import Object
- >>> o = Object()
- >>> o.key = "value"
- >>> o.key
- 'value'
- >>> o
- {"key": "value"}
+ $ mbx scan ~/Desktop/25-1-2013
+ reading from /home/bart/Desktop/25-1-2013
+ ok 6892
+ 
+ $ mbx find From==pvp- Subject -t
+ 0 Subject=RE: afspraak donderdag 11y41d
+ 1 Subject=RE: FW: verzoek afspraak gesprek 11y90d
+ 2 Subject=RE: afspraak Pjotr K en Henk O 11y85d
+ 3 Subject=RE: afspraak donderdag 11y42d
+ 4 Subject=RE: goede morgen 11y85d
+ 5 Subject=FW: verzoek afspraak gesprek 11y90d
+ 6 Subject=RE: Annemiek en afspraak Henk O 11y88d
+ 7 Subject=RE: afspraak donderdag 11y41d
+ 8 Subject=brief 11y215d
+ 9 Subject=RE: De gevaren van de FACT methodiek 8y232d
+ 10 Subject=Automatisch antwoord: Weer vergiftiging opgelopen bij de GGZ 9y103d
+ 11 Subject=RE: Weer vergiftiging opgelopen bij de GGZ 9y101d
+ 12 Subject=RE: Hulp 9y192d
+ 13 Subject=Automatisch antwoord: Brief aan de GGZ-NHN 8y228d
+ 14 Subject=Re: Klacht over het negeren van een signaal en het niet opbouwen van vertrouwen bij de client 9y1d
 
-objects can be saved and loaded to JSON files:
-
- >>> from obj import Object, cfg
- >>> cfg.wd = "data"
- >>> o = Object()
- >>> o.key = "value"
- >>> path = o.save()
- >>> path
- 'obj.Object/4b58abe2-3757-48d4-986b-d0857208dd96/2021-04-12/21:15:33.734994
- >>> oo = Object().load(path)
- >>> oo.key
- 'value'
-
-an Object tries to mimic a dictionary while trying to be an object with normal
-attribute access as well. Hidden methods are provided as are the basic
-methods like get, items, keys, register, set, update, values.
-
-great for giving objects peristence by having their state stored in files.
+ $ mbx ver
+ MBX 1
 
 CONTACT
 =======
