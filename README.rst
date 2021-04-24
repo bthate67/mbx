@@ -51,7 +51,5 @@ examples::
 CONTACT
 =======
 
-have fun coding
-
 | Bart Thate (bthate67@gmail.com)
 | botfather on #dunkbots irc.freenode.net
